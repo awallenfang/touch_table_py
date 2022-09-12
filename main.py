@@ -21,7 +21,8 @@ minute_timer = Timer(period=60000, mode=Timer.PERIODIC, callback=lambda t: minut
 minute_timer.init(period=60000, mode=Timer.PERIODIC, callback=lambda t: minutes_left -= 1)  # type: ignore
 
 button_pin = Pin(21, Pin.IN)
-led_pin = Pin(22, Pin.OUT)
+led_pin = Pin(20, Pin.OUT)
+piezo_pin = Pin(22, PIN.OUT)
 
 tens_a = Pin(13, Pin.OUT)
 tens_b = Pin(12, Pin.OUT)
@@ -55,6 +56,7 @@ while True:
     if minutes_left <= 0:
         led_pin.value(0)
         minute_timer.deinit()
+        # ! TODO: Send IR Code to Beamer here
 
     if minutes_left == 0 :
         tens_digit = 0
