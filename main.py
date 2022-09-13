@@ -62,6 +62,7 @@ def piezo_sound_turn_on(piezo_pin):
     piezo_pin.freq(400) # frequency in Hz [Range 10Hz to 12000Hz]
     piezo_pin.duty_u16(1000) # Dutycyle (Volume) [Range 0 (Silent/Off) to 1000 (Full blast)]
     time.sleep(1) # Delay in seconds
+
     piezo_pin.duty_u16(0)
 
 def piezo_sound_turn_off(piezo_pin):
