@@ -1,4 +1,4 @@
-from machine import Pin, Timer
+from machine import Pin, Timer, PWM
 from ir_tx.nec import NEC
 
 # digits to 7 segment display
@@ -22,7 +22,7 @@ minute_timer = Timer(period=60000, mode=Timer.PERIODIC, callback=lambda t: minut
 minute_timer.init(period=60000, mode=Timer.PERIODIC, callback=lambda t: minutes_left -= 1)  # type: ignore
 
 button_pin = Pin(21, Pin.IN)
-piezo_pin = Pin(22, PIN.OUT)
+piezo_pin = PWM(Pin(22))
 
 tens_a = Pin(13, Pin.OUT)
 tens_b = Pin(12, Pin.OUT)
@@ -45,7 +45,21 @@ _ones_dot = Pin(7, Pin.OUT)
 tens_digit = 0
 ones_digit = 0
 
+
 nec = NEC(Pin(20, Pin.OUT, value = 0)) # Add NEC Transmitter
+
+
+def piezo_sound_turn_on(piezo_pin):
+    buzzer.freq(400) # frequency in Hz [Range 10Hz to 12000Hz]
+    buzzer.duty_u16(1000) # Dutycyle (Volume) [Range 0 (Silent/Off) to 1000 (Full blast)]
+    sleep(1) # Delay in seconds
+    buzzer.duty_u16(0)
+
+def piezo_sound_turn_off(piezo_pin):
+    return
+
+def piezo_sound_remider(piezo_pin)
+    return
 
 while True:
     # If button is pressed, reset minutes left and start new timers
