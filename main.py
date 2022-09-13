@@ -1,5 +1,5 @@
-from machine import Pin
 import time
+from machine import Pin, PWM
 from ir_tx.nec import NEC
 import math
 
@@ -29,7 +29,7 @@ minutes_left = 0
 #minute_timer.init(period=60000, mode=Timer.PERIODIC, callback=lambda t: minutes_left -= 1)  # type: ignore
 
 button_pin = Pin(21, Pin.IN, Pin.PULL_UP)
-piezo_pin = Pin(20, Pin.OUT)
+piezo_pin = PWM(Pin(22))
 
 tens_a = Pin(13, Pin.OUT)
 tens_b = Pin(12, Pin.OUT)
@@ -52,10 +52,24 @@ _ones_dot = Pin(7, Pin.OUT)
 tens_digit = 0
 ones_digit = 0
 
-nec = NEC(Pin(22, Pin.OUT, value = 0)) # Add NEC Transmitter
+
+nec = NEC(Pin(22, Pin.OUT)) # Add NEC Transmitter
 delta = 0
 start_time = time.ticks_ms()
 print("started")
+
+def piezo_sound_turn_on(piezo_pin):
+    piezo_pin.freq(400) # frequency in Hz [Range 10Hz to 12000Hz]
+    piezo_pin.duty_u16(1000) # Dutycyle (Volume) [Range 0 (Silent/Off) to 1000 (Full blast)]
+    time.sleep(1) # Delay in seconds
+    piezo_pin.duty_u16(0)
+
+def piezo_sound_turn_off(piezo_pin):
+    return
+
+def piezo_sound_remider(piezo_pin):
+    return
+
 while True:
     # If button is pressed, reset minutes left and start new timers
     if button_pin.value() == 0:
@@ -63,6 +77,7 @@ while True:
             nec.transmit(0xCA8B, 0x12) # turn beamer on
             time.sleep(1)
             print("Turnon")
+            piezo_sound_turn_on(piezo_pin)
             
         start_time = time.ticks_ms() # get millisecond counter
         delta = 1
