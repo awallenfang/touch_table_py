@@ -50,10 +50,10 @@ nec = NEC(Pin(20, Pin.OUT, value = 0)) # Add NEC Transmitter
 
 
 def piezo_sound_turn_on(piezo_pin):
-    buzzer.freq(400) # frequency in Hz [Range 10Hz to 12000Hz]
-    buzzer.duty_u16(1000) # Dutycyle (Volume) [Range 0 (Silent/Off) to 1000 (Full blast)]
+    piezo_pin.freq(400) # frequency in Hz [Range 10Hz to 12000Hz]
+    piezo_pin.duty_u16(1000) # Dutycyle (Volume) [Range 0 (Silent/Off) to 1000 (Full blast)]
     sleep(1) # Delay in seconds
-    buzzer.duty_u16(0)
+    piezo_pin.duty_u16(0)
 
 def piezo_sound_turn_off(piezo_pin):
     return
@@ -67,6 +67,7 @@ while True:
         if minutes_left <= 0: # If beamer was off, it will turn on.
             nec.transmit(0xCA8B, 0x12) # turn beamer on
             time.sleep(1)
+            piezo_sound_turn_on(piezo_pin) # Play nice tune
         minutes_left = 15
         minute_timer.init(period=60000, mode=Timer.PERIODIC, callback=lambda t: global minutes_left -= 1)  # type: ignore # Minute_timer decreases minutes_left every 60s incrementally
         
@@ -77,6 +78,7 @@ while True:
     if minutes_left <= 0:
         minutes_left = 0 # gotta make sure, computers are fucky wucky sometimes uwu
         minute_timer.deinit()
+        piezo_sound_turn_off(piezo_pin)
         nec.transmit(0xCA8B, 0x12)  # address == 0xCA8B, data == 0x12
         time.sleep(3)
         nec.transmit(0xCA8B, 0x12) # Shutting the beamer off requires two (2) button presses
