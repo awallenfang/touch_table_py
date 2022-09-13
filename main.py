@@ -1,4 +1,5 @@
 from machine import Pin, Timer
+from ir_tx.nec import NEC
 
 # digits to 7 segment display
 lookup = [
@@ -21,7 +22,6 @@ minute_timer = Timer(period=60000, mode=Timer.PERIODIC, callback=lambda t: minut
 minute_timer.init(period=60000, mode=Timer.PERIODIC, callback=lambda t: minutes_left -= 1)  # type: ignore
 
 button_pin = Pin(21, Pin.IN)
-led_pin = Pin(20, Pin.OUT)
 piezo_pin = Pin(22, PIN.OUT)
 
 tens_a = Pin(13, Pin.OUT)
@@ -45,18 +45,29 @@ _ones_dot = Pin(7, Pin.OUT)
 tens_digit = 0
 ones_digit = 0
 
+nec = NEC(Pin(20, Pin.OUT, value = 0)) # Add NEC Transmitter
+
 while True:
     # If button is pressed, reset minutes left and start new timers
     if button_pin.value() == 0:
+        if minutes_left <= 0: # If beamer was off, it will turn on.
+            nec.transmit(0xCA8B, 0x12) # turn beamer on
+            time.sleep(1)
         minutes_left = 15
-        minute_timer.init(period=60000, mode=Timer.PERIODIC, callback=lambda t: global minutes_left -= 1)  # type: ignore
-
-
-    # If the minute timer is done, restart it and decrease minutes_left until minutes_left is at 0 at that point disable the beamer
+        minute_timer.init(period=60000, mode=Timer.PERIODIC, callback=lambda t: global minutes_left -= 1)  # type: ignore # Minute_timer decreases minutes_left every 60s incrementally
+        
+        
+            
+            
+    # If the 15 min timer is done counting down, disable timer and disable beamer
     if minutes_left <= 0:
-        led_pin.value(0)
+        minutes_left = 0 # gotta make sure, computers are fucky wucky sometimes uwu
         minute_timer.deinit()
-        # ! TODO: Send IR Code to Beamer here
+        nec.transmit(0xCA8B, 0x12)  # address == 0xCA8B, data == 0x12
+        time.sleep(3)
+        nec.transmit(0xCA8B, 0x12) # Shutting the beamer off requires two (2) button presses
+        time.sleep(1)
+        
 
     if minutes_left == 0 :
         tens_digit = 0
