@@ -1,5 +1,7 @@
-from machine import Pin, Timer
+from machine import Pin
+import time
 from ir_tx.nec import NEC
+import math
 
 # digits to 7 segment display
 lookup = [
@@ -18,11 +20,16 @@ lookup = [
 
 minutes_left = 0
 
-minute_timer = Timer(period=60000, mode=Timer.PERIODIC, callback=lambda t: minutes_left -= 1)  # type: ignore
-minute_timer.init(period=60000, mode=Timer.PERIODIC, callback=lambda t: minutes_left -= 1)  # type: ignore
+# CRUDE TIMER VARIANT
+#start = time.ticks_ms() # get millisecond counter
+#delta = time.ticks_diff(time.ticks_ms(), start) # compute time difference
 
-button_pin = Pin(21, Pin.IN)
-piezo_pin = Pin(22, PIN.OUT)
+# ORIGNIAL TIMER
+#minute_timer = Timer(period=60000, mode=Timer.PERIODIC, callback=lambda t: minutes_left -= 1)  # type: ignore
+#minute_timer.init(period=60000, mode=Timer.PERIODIC, callback=lambda t: minutes_left -= 1)  # type: ignore
+
+button_pin = Pin(21, Pin.IN, Pin.PULL_UP)
+piezo_pin = Pin(20, Pin.OUT)
 
 tens_a = Pin(13, Pin.OUT)
 tens_b = Pin(12, Pin.OUT)
@@ -45,29 +52,37 @@ _ones_dot = Pin(7, Pin.OUT)
 tens_digit = 0
 ones_digit = 0
 
-nec = NEC(Pin(20, Pin.OUT, value = 0)) # Add NEC Transmitter
-
+nec = NEC(Pin(22, Pin.OUT, value = 0)) # Add NEC Transmitter
+delta = 0
+start_time = time.ticks_ms()
+print("started")
 while True:
     # If button is pressed, reset minutes left and start new timers
     if button_pin.value() == 0:
-        if minutes_left <= 0: # If beamer was off, it will turn on.
+        if delta == 0: # If beamer was off, it will turn on.
             nec.transmit(0xCA8B, 0x12) # turn beamer on
             time.sleep(1)
-        minutes_left = 15
-        minute_timer.init(period=60000, mode=Timer.PERIODIC, callback=lambda t: global minutes_left -= 1)  # type: ignore # Minute_timer decreases minutes_left every 60s incrementally
-        
-        
+            print("Turnon")
             
-            
-    # If the 15 min timer is done counting down, disable timer and disable beamer
-    if minutes_left <= 0:
-        minutes_left = 0 # gotta make sure, computers are fucky wucky sometimes uwu
-        minute_timer.deinit()
+        start_time = time.ticks_ms() # get millisecond counter
+        delta = 1
+
+
+    if delta != 0:
+        time.sleep(0.05)
+        delta = time.ticks_diff(time.ticks_ms(), start_time)
+        minutes_left = 15 - math.floor(delta/10/60)
+        
+    # drunk coding lmao yeet
+    #delta = time.ticks_diff(time.ticks_ms(), start_time)
+    if delta >= 9000: #900.000 ms = 15mins
+        delta = 0 # gotta make sure, computers are fucky wucky sometimes uwu
         nec.transmit(0xCA8B, 0x12)  # address == 0xCA8B, data == 0x12
         time.sleep(3)
         nec.transmit(0xCA8B, 0x12) # Shutting the beamer off requires two (2) button presses
         time.sleep(1)
-        
+        minutes_left = 0
+    
 
     if minutes_left == 0 :
         tens_digit = 0
@@ -93,6 +108,8 @@ while True:
     ones_f.value(lookup[ones_digit][5])
     ones_g.value(lookup[ones_digit][6])
 
-    
-    
-        
+
+
+
+
+
