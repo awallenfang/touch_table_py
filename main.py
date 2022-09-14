@@ -70,11 +70,6 @@ def piezo_sound_turn_off(piezo_pin):
 def piezo_sound_remider(piezo_pin):
     return
 
-
-nec = NEC(Pin(22, Pin.OUT)) # Add NEC Transmitter
-delta = 0
-start_time = time.ticks_ms()
-print("started")
 while True:
     # If button is pressed, reset minutes left and start new timers
     if button_pin.value() == 0:
@@ -83,16 +78,16 @@ while True:
             time.sleep(1)
             print("Turnon")
             piezo_sound_turn_on(piezo_pin)
-            
+        
         start_time = time.ticks_ms() # get millisecond counter
         delta = 1
-
-
+        
+            
     if delta != 0:
         time.sleep(0.05)
         delta = time.ticks_diff(time.ticks_ms(), start_time)
         minutes_left = 15 - math.floor(delta/10/60)
-        
+            
     # drunk coding lmao yeet
     #delta = time.ticks_diff(time.ticks_ms(), start_time)
     if delta >= 9000: #900.000 ms = 15mins
@@ -104,7 +99,7 @@ while True:
         minutes_left = 0
         piezo_sound_turn_off(piezo_pin)
 
-    
+        
 
     if minutes_left == 0 :
         tens_digit = 0
@@ -121,7 +116,7 @@ while True:
     tens_e.value(lookup[tens_digit][4])  # type: ignore
     tens_f.value(lookup[tens_digit][5])  # type: ignore
     tens_g.value(lookup[tens_digit][6])  # type: ignore
-
+    
     ones_a.value(lookup[ones_digit][0])  # type: ignore
     ones_b.value(lookup[ones_digit][1])  # type: ignore
     ones_c.value(lookup[ones_digit][2])  # type: ignore
@@ -129,3 +124,4 @@ while True:
     ones_e.value(lookup[ones_digit][4])  # type: ignore
     ones_f.value(lookup[ones_digit][5])  # type: ignore
     ones_g.value(lookup[ones_digit][6])  # type: ignore
+        
