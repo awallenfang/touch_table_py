@@ -23,7 +23,11 @@ minutes_left = 0
 # CRUDE TIMER VARIANT
 #start = time.ticks_ms() # get millisecond counter
 #delta = time.ticks_diff(time.ticks_ms(), start) # compute time difference
-piezo_pin = PWM(Pin(22))
+
+piezo = machine.Pin(22)
+piezo_pin = machine.PWM(piezo)
+
+
 
 # ORIGNIAL TIMER
 #minute_timer = Timer(period=60000, mode=Timer.PERIODIC, callback=lambda t: minutes_left -= 1)  # type: ignore
@@ -53,16 +57,27 @@ tens_digit = 0
 ones_digit = 0
 
 
-nec = NEC(Pin(22, Pin.OUT)) # Add NEC Transmitter
+nec = NEC(Pin(16, Pin.OUT)) # Add NEC Transmitter
+
 delta = 0
 start_time = time.ticks_ms()
 print("started")
 
-def piezo_sound_turn_on(piezo_pin):
-    piezo_pin.freq(420) # frequency in Hz [Range 10Hz to 12000Hz]
-    piezo_pin.duty_u16(1000) # Dutycyle (Volume) [Range 0 (Silent/Off) to 1000 (Full blast)]
-    time.sleep(1) # Delay in seconds
-    piezo_pin.duty_u16(0)
+
+#piezo_pin.freq(500)
+#piezo_pin.duty_u16(512)
+
+
+def piezo_sound_turn_on(pin):
+    pin.freq(420) # frequency in Hz [Range 10Hz to 12000Hz]
+    pin.duty_u16(512) # Dutycyle (Volume) [Range 0 (Silent/Off) to 1000 (Full blast)]
+    time.sleep(0.25) # Delay in seconds
+    pin.freq(630)
+    time.sleep(0.2)
+    pin.freq(840)
+    time.sleep(0.4)
+    pin.duty_u16(0)
+    
 
 def piezo_sound_turn_off(piezo_pin):
     return
@@ -124,4 +139,4 @@ while True:
     ones_e.value(lookup[ones_digit][4])  # type: ignore
     ones_f.value(lookup[ones_digit][5])  # type: ignore
     ones_g.value(lookup[ones_digit][6])  # type: ignore
-        
+
