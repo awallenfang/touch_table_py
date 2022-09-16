@@ -65,6 +65,9 @@ start_time = time.ticks_ms() # Moment Button was pressed
 delta_blinker = 0
 standby_blinker = time.ticks_ms() 
 
+delta_blinker_active = 0
+active_blinker = time.ticks_ms() 
+
 # Piezo Helper Subroutines
 def piezo_sound_turn_on(pin):
     pin.freq(530) # frequency in Hz [Range 10Hz to 12000Hz]
@@ -137,7 +140,7 @@ while True:
         if minutes_left <= 14:
             piezo_sound_button_press(piezo_pin)
         
-            
+        
     if delta != 0:
         time.sleep(0.05)
         delta = time.ticks_diff(time.ticks_ms(), start_time)
@@ -186,6 +189,8 @@ while True:
         flag_standby = True
         standby_blinker = time.ticks_ms() 
         time.sleep(0.1)
+        _ones_dot.value(0)
+        _tens_dot.value(0)
         
         
     if minutes_left == 0 :
@@ -216,9 +221,18 @@ while True:
         ones_f.value(lookup[ones_digit][5])  # type: ignore
         ones_g.value(lookup[ones_digit][6])  # type: ignore
         
-        _ones_dot.value(0)
+        #_ones_dot.value(0)
         _tens_dot.value(0)
         delta_blinker = 0
+        
+        # put normal blinker 'ere
+        active_blinker = time.ticks_ms()
+        delta_blinker_active = time.ticks_diff(time.ticks_ms(), standby_blinker)
+        if delta_blinker_active >= 1000:
+            #Do blinky blinky
+            _ones_dot.value( not _ones_dot.value() )
+            active_blinker = time.ticks_ms() 
+            delta_blinker_active = 1
         
     else:
         tens_a.value(0)
