@@ -1,5 +1,7 @@
-# touch_table_py
+# AEGIS Beamer Protection Device
 
-button go boop
+### For use in a Multi touch Table
 
-beamer go beep
+- Running on Raspberry Pi Pico using Micropython 1.19.1  
+- Uses the IR_RX/TX Library for Micropython
+
