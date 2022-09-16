@@ -53,7 +53,7 @@ tens_digit = 0
 ones_digit = 0
 
 # Flag for reminder tone
-flag_reminder_2min = False
+flag_reminder_2min_triggered = False
 flag_standby = False
 
 
@@ -96,7 +96,7 @@ def piezo_sound_turn_off(pin):
     time.sleep(0.2)
     pin.duty_u16(0)
 
-def piezo_sound_remider(pin):
+def piezo_sound_reminder(pin):
     pin.freq(840)
     pin.duty_u16(512)
     time.sleep(0.4)
@@ -133,6 +133,7 @@ while True:
         start_time = time.ticks_ms() # get millisecond counter
         delta = 1
         flag_standby = False
+        flag_reminder_2min_triggered = False
         if minutes_left <= 14:
             piezo_sound_button_press(piezo_pin)
         
@@ -142,6 +143,12 @@ while True:
         delta = time.ticks_diff(time.ticks_ms(), start_time)
         minutes_left = 15 - math.floor(delta/1000/60)
             
+    if delta >= 780000: #780.000 ms = 13mins passed; 2 mins left
+        if flag_reminder_2min_triggered == False:
+            flag_reminder_2min_triggered = True
+            piezo_sound_reminder(piezo_pin)
+    
+    
     # drunk coding lmao yeet
     # delta = time.ticks_diff(time.ticks_ms(), start_time)
     if delta >= 900000: #900.000 ms = 15mins
