@@ -133,6 +133,8 @@ while True:
         start_time = time.ticks_ms() # get millisecond counter
         delta = 1
         flag_standby = False
+        if minutes_left <= 14:
+            piezo_sound_button_press(piezo_pin)
         
             
     if delta != 0:
