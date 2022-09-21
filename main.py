@@ -131,7 +131,7 @@ while True:
         
         if delta == 0: # If beamer was off, it will turn on.
             piezo_sound_turn_on(piezo_pin)
-            for i in range(0;i>=16;i++)
+            for i in range(0,16)
                 tens_digit = (i - (i % 10)) // 10
                 ones_digit = i % 10
                 
@@ -161,7 +161,7 @@ while True:
         if minutes_left <= 14:
             piezo_sound_button_press(piezo_pin)
             #count back up
-            for i in range(minutes_left;i>=16;i++)
+            for i in range(minutes_left,16)
                 tens_digit = (i - (i % 10)) // 10
                 ones_digit = i % 10
                 
