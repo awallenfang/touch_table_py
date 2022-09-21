@@ -128,17 +128,59 @@ while True:
     
     # If button is pressed, reset minutes left and start new timers
     if button_pin.value() == 0:
+        
         if delta == 0: # If beamer was off, it will turn on.
             piezo_sound_turn_on(piezo_pin)
-            time.sleep(0.25)
+            for i in range(0;i>=16;i++)
+                tens_digit = (i - (i % 10)) // 10
+                ones_digit = i % 10
+                
+                tens_a.value(lookup[tens_digit][0])  # type: ignore
+                tens_b.value(lookup[tens_digit][1])  # type: ignore
+                tens_c.value(lookup[tens_digit][2])  # type: ignore
+                tens_d.value(lookup[tens_digit][3])  # type: ignore
+                tens_e.value(lookup[tens_digit][4])  # type: ignore
+                tens_f.value(lookup[tens_digit][5])  # type: ignore
+                tens_g.value(lookup[tens_digit][6])  # type: ignore
+                
+                ones_a.value(lookup[ones_digit][0])  # type: ignore
+                ones_b.value(lookup[ones_digit][1])  # type: ignore
+                ones_c.value(lookup[ones_digit][2])  # type: ignore
+                ones_d.value(lookup[ones_digit][3])  # type: ignore
+                ones_e.value(lookup[ones_digit][4])  # type: ignore
+                ones_f.value(lookup[ones_digit][5])  # type: ignore
+                ones_g.value(lookup[ones_digit][6])  # type: ignore
+                time.sleep(0.1) # CHANGE FOR TIME
             nec.transmit(0xCA8B, 0x12) # turn beamer on
             time.sleep(0.25)
         start_time = time.ticks_ms() # get millisecond counter
         delta = 1
         flag_standby = False
         flag_reminder_2min_triggered = False
+        
         if minutes_left <= 14:
             piezo_sound_button_press(piezo_pin)
+            #count back up
+            for i in range(minutes_left;i>=16;i++)
+                tens_digit = (i - (i % 10)) // 10
+                ones_digit = i % 10
+                
+                tens_a.value(lookup[tens_digit][0])  # type: ignore
+                tens_b.value(lookup[tens_digit][1])  # type: ignore
+                tens_c.value(lookup[tens_digit][2])  # type: ignore
+                tens_d.value(lookup[tens_digit][3])  # type: ignore
+                tens_e.value(lookup[tens_digit][4])  # type: ignore
+                tens_f.value(lookup[tens_digit][5])  # type: ignore
+                tens_g.value(lookup[tens_digit][6])  # type: ignore
+                
+                ones_a.value(lookup[ones_digit][0])  # type: ignore
+                ones_b.value(lookup[ones_digit][1])  # type: ignore
+                ones_c.value(lookup[ones_digit][2])  # type: ignore
+                ones_d.value(lookup[ones_digit][3])  # type: ignore
+                ones_e.value(lookup[ones_digit][4])  # type: ignore
+                ones_f.value(lookup[ones_digit][5])  # type: ignore
+                ones_g.value(lookup[ones_digit][6])  # type: ignore
+                time.sleep(0.3) # CHANGE FOR TIME
         
         
     if delta != 0:
