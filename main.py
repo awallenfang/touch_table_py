@@ -131,7 +131,7 @@ while True:
         
         if delta == 0: # If beamer was off, it will turn on.
             piezo_sound_turn_on(piezo_pin)
-            for i in range(0,16)
+            for i in range(0,16):
                 tens_digit = (i - (i % 10)) // 10
                 ones_digit = i % 10
                 
@@ -150,9 +150,10 @@ while True:
                 ones_e.value(lookup[ones_digit][4])  # type: ignore
                 ones_f.value(lookup[ones_digit][5])  # type: ignore
                 ones_g.value(lookup[ones_digit][6])  # type: ignore
-                time.sleep(0.1) # CHANGE FOR TIME
+                time.sleep(0.05) # CHANGE FOR TIME
             nec.transmit(0xCA8B, 0x12) # turn beamer on
             time.sleep(0.25)
+            minutes_left = 15
         start_time = time.ticks_ms() # get millisecond counter
         delta = 1
         flag_standby = False
@@ -161,7 +162,7 @@ while True:
         if minutes_left <= 14:
             piezo_sound_button_press(piezo_pin)
             #count back up
-            for i in range(minutes_left,16)
+            for i in range(minutes_left,16):
                 tens_digit = (i - (i % 10)) // 10
                 ones_digit = i % 10
                 
@@ -180,7 +181,7 @@ while True:
                 ones_e.value(lookup[ones_digit][4])  # type: ignore
                 ones_f.value(lookup[ones_digit][5])  # type: ignore
                 ones_g.value(lookup[ones_digit][6])  # type: ignore
-                time.sleep(0.3) # CHANGE FOR TIME
+                time.sleep(0.05) # CHANGE FOR TIME
         
         
     if delta != 0:
@@ -207,7 +208,7 @@ while True:
         
         #Timer Coundown 60s cooldown with no input + Enter standby mode
         
-        for i in range(60;0;i = i - 1):
+        for i in range(60,0):
             tens_digit = (i - (i % 10)) // 10
             ones_digit = i % 10
             
@@ -268,8 +269,7 @@ while True:
         delta_blinker = 0
         
         # put normal blinker 'ere
-        active_blinker = time.ticks_ms()
-        delta_blinker_active = time.ticks_diff(time.ticks_ms(), standby_blinker)
+        delta_blinker_active = time.ticks_diff(time.ticks_ms(), active_blinker)
         if delta_blinker_active >= 1000:
             #Do blinky blinky
             _ones_dot.value( not _ones_dot.value() )
