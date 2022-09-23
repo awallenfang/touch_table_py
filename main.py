@@ -208,7 +208,7 @@ while True:
         
         #Timer Coundown 60s cooldown with no input + Enter standby mode
         
-        for i in range(60,0):
+        for i in range(60,0,-1):
             tens_digit = (i - (i % 10)) // 10
             ones_digit = i % 10
             
