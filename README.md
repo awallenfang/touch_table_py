@@ -5,3 +5,4 @@
 - Running on Raspberry Pi Pico using Micropython 1.19.1  
 - Uses the IR_RX/TX Library for Micropython
 
+![](device.png)
